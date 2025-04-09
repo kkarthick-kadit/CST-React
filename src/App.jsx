@@ -1,4 +1,3 @@
-// App.jsx - Main Application Component
 import React, { useState, useEffect } from 'react';
 import SearchContainer from './components/SearchContainer';
 import ResultsContainer from './components/ResultsContainer';
@@ -33,8 +32,8 @@ function App() {
     }
   }, []);
 
-  // Debounced search function
-  const debouncedSearch = (query) => {
+  // Function to perform search when submit button is clicked or suggestion is selected
+  const handleSearchSubmit = (query) => {
     setSearchQuery(query);
     
     if (!query || query.trim() === '') {
@@ -43,10 +42,19 @@ function App() {
     }
     
     performSearch(query);
+    
+    // Update URL with search parameters
+    const urlParams = new URLSearchParams();
+    urlParams.set('query', query);
+    urlParams.set('k', kValue.toString());
+    urlParams.set('from_another_source', anotherSource.toString());
+    
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+    window.history.pushState({ path: newUrl }, '', newUrl);
   };
 
   // Function to perform the actual search
-  const performSearch = async (query,sourceOverride = anotherSource) => {
+  const performSearch = async (query) => {
     if (!query || query.trim() === '') {
       return;
     }
@@ -56,7 +64,7 @@ function App() {
 
     try {
       // Build the query URL with all parameters
-      const searchUrl = `http://localhost:8000/search?query=${encodeURIComponent(query)}&k=${kValue}&from_another_source=${sourceOverride}`;
+      const searchUrl = `http://localhost:8000/search?query=${encodeURIComponent(query)}&k=${kValue}&from_another_source=${anotherSource}`;
       
       const response = await fetch(searchUrl);
       if (!response.ok) {
@@ -76,17 +84,11 @@ function App() {
   // Handle changes to k value
   const handleKValueChange = (newValue) => {
     setKValue(newValue);
-    if (searchQuery.trim() !== '') {
-      performSearch(searchQuery);
-    }
   };
 
   // Handle changes to another source toggle
   const handleSourceToggleChange = (checked) => {
     setAnotherSource(checked);
-    if (searchQuery.trim() !== '') {
-      performSearch(searchQuery,checked);
-    }
   };
 
   return (
@@ -94,7 +96,7 @@ function App() {
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
         <SearchContainer 
           searchQuery={searchQuery}
-          onSearchChange={debouncedSearch}
+          onSearchSubmit={handleSearchSubmit}
           kValue={kValue}
           onKValueChange={handleKValueChange}
           anotherSource={anotherSource}
