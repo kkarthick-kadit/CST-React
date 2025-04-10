@@ -64,7 +64,7 @@ function App() {
 
     try {
       // Build the query URL with all parameters
-      const searchUrl = `http://localhost:8000/search?query=${encodeURIComponent(query)}&k=${kValue}&from_another_source=${anotherSource}`;
+      const searchUrl = `http://host.docker.internal:8000/search?query=${encodeURIComponent(query)}&k=${kValue}&from_another_source=${anotherSource}`;
       
       const response = await fetch(searchUrl);
       if (!response.ok) {

@@ -25,7 +25,6 @@ COPY --from=build /app/build /var/www/vhosts/frontend/
 # Remove the default Nginx site configuration
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Copy custom Nginx configuration for the portfolio
 COPY --from=build /app/cst.conf /etc/nginx/conf.d/cst.conf
 
 # Expose port 80 and run Nginx in the foreground

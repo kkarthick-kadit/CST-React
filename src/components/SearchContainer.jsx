@@ -59,7 +59,7 @@ const SearchContainer = ({
   const fetchSuggestions = async (query) => {
     try {
       // Replace with your actual suggestions API endpoint
-      const response = await fetch(`http://localhost:8000/suggest?query=${encodeURIComponent(query)}`);
+      const response = await fetch(`http://host.docker.internal:8000/suggest?query=${encodeURIComponent(query)}`);
       if (!response.ok) {
         throw new Error('Failed to fetch suggestions');
       }
